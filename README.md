@@ -35,11 +35,12 @@ the consequences of that identity for the local vortex-stretching term.
   the vorticity direction, Constantin–Fefferman desingularization, the
   angular-dispersion functional \(\mathcal{D}_{\boldsymbol{\xi}}\), and the
   classical geometric criteria (Neustupa–Penel, Miller).
-- Mathlib's `IsHermitian.eigenvalues` are indexed by `Fin 3` after a
-  cardinality reindexing. Lean index `1` plays the role of the paper's
-  intermediate eigenvalue \(\lambda_2\). The algebra does not need the
-  ordering \(\lambda_1\le\lambda_2\le\lambda_3\), and Lean does **not**
-  prove that the indexing is sorted, or that \(\lambda_1\le 0\le\lambda_3\).
+- Eigenvalues are Mathlib's antitone family `IsHermitian.eigenvalues₀`,
+  reversed, so they are increasing: \(\lambda_0\le\lambda_1\le\lambda_2\)
+  (paper: \(\lambda_1\le\lambda_2\le\lambda_3\)). Lean index `1` is proved
+  to be the intermediate eigenvalue (`eigenvalues_ordered`). Trace zero
+  then gives \(\lambda_0\le 0\le\lambda_2\)
+  (`eigenvalues_min_nonpos_max_nonneg`).
 
 ## What Lean actually proves
 
@@ -48,8 +49,11 @@ All of the following use only `propext`, `Classical.choice`, `Quot.sound`
 
 1. `StrainTensor.isHermitian`: a real symmetric matrix is Hermitian
    (compile adaptation, see below).
-2. `eigenvalues_sum_zero`: \(\lambda_0+\lambda_1+\lambda_2=0\) for every
-   `StrainTensor` (symmetric, trace zero).
+2. `eigenvalues_monotone` / `eigenvalues_ordered`:
+   \(\lambda_0\le\lambda_1\le\lambda_2\) for every `StrainTensor`.
+2a. `eigenvalues_sum_zero`: \(\lambda_0+\lambda_1+\lambda_2=0\).
+2b. `eigenvalues_min_nonpos_max_nonneg`: \(\lambda_0\le 0\le\lambda_2\)
+   (paper: \(\lambda_1\le 0\le\lambda_3\)).
 3. `quadratic_form_eq_sum`: with `U = eigvecs S` the orthonormal
    eigenvector matrix from Mathlib's spectral theorem and
    `η = eigenCoords S ξ = Uᵀ ξ`, \(\xi\cdot S\xi=\sum_i\lambda_i\eta_i^2\)
@@ -57,13 +61,15 @@ All of the following use only `propext`, `Classical.choice`, `Quot.sound`
 4. `sum_sq_eigenCoords`: \(\sum_i\eta_i^2=\sum_i\xi_i^2\).
 5. `quadratic_form_intermediate` (paper Proposition 1.1): if
    \(\sum_i\xi_i^2=1\), then
-   \(\xi\cdot S\xi=\lambda_1+(\lambda_0-\lambda_1)\eta_0^2+(\lambda_2-\lambda_1)\eta_2^2\).
+   \(\xi\cdot S\xi=\lambda_1+(\lambda_0-\lambda_1)\eta_0^2+(\lambda_2-\lambda_1)\eta_2^2\),
+   with \(\lambda_1\) the intermediate eigenvalue.
 5a. `intermediate_representation`: the same identity for `stretching`
-   (eigen-coordinates).
+   (ordered eigen-coordinates).
 6. `sum_sq_eq_one_not_imp_norm_eq_one`: counterexample showing
    \(\sum_i\xi_i^2=1\not\Rightarrow\|\xi\|=1\) on `Fin 3 → ℝ`.
 7. Non-vacuity: `exampleStrain = diag(1, -1, 0)` is a `StrainTensor`;
-   `exampleStrain_eigenvalues_ne_zero` (its eigenvalues are not all zero);
+   `exampleStrain_eigenvalues_eq` (the increasing eigenvalues are
+   \((-1,0,1)\)); `exampleStrain_eigenvalues_ne_zero`;
    `exampleStrain_intermediate_nontrivial` (for `ξ = (1,0,0)` the hypothesis
    holds and both sides of Proposition 1.1 equal `1`).
 
@@ -93,20 +99,23 @@ Sorry count: **0**. CI enforces zero `sorry`.
 | `hξ : ∑ i, (ξ i)^2 = 1` (`quadratic_form_intermediate`) | \(\xi=\omega/|\omega|\) is a Euclidean unit vector | Yes (vorticity and \(\omega\neq0\) not formalized) |
 | `hξ : ∑ i, (ξ i)^2 = 1` (`stretching`, `intermediate_representation`) | same, with \(\xi\) already in eigen-coordinates | Yes after the correction on this branch. The original `‖ξ‖ = 1` was the sup norm: **mismatch** (counterexample \((3/5,4/5,0)\)) |
 | `eigvecs S`, `eigenCoords S ξ = Uᵀξ` | orthonormal eigenbasis \(e_i\), \(\xi=\sum\xi_ie_i\) | Yes (Mathlib spectral theorem; orthonormality proved via `sum_sq_eigenCoords`) |
-| `eigenvalues S i`, `i = 0,1,2` | ordered \(\lambda_1\le\lambda_2\le\lambda_3\), \(\lambda_2\) = **intermediate** eigenvalue | **Mismatch.** `eigenvalues` is `eigenvalues₀` (antitone) composed with `Fintype.equivOfCardEq`, a choice-based reindexing, so Lean does **not** prove index `1` is the middle eigenvalue. The identity holds for every labelling, so it is still true, but "λ₂ is the intermediate eigenvalue" is not encoded |
+| `eigenvalues S i`, `i = 0,1,2` | ordered \(\lambda_1\le\lambda_2\le\lambda_3\), \(\lambda_2\) = **intermediate** eigenvalue | **Yes.** Public `eigenvalues` is Mathlib's antitone `eigenvalues₀`, reversed, so \(\lambda_0\le\lambda_1\le\lambda_2\) (`eigenvalues_ordered`). Index `1` is the intermediate eigenvalue. Eigenvectors and `eigenCoords` use the same order. |
 
 Proof steps and the rule each uses:
 
-- `eigenvalues_sum_zero`: Mathlib `IsHermitian.trace_eq_sum_eigenvalues`, then `trace_zero`. Exact.
-- `quadratic_form_eq_sum`: Mathlib `IsHermitian.spectral_theorem` (\(S=UDU^{*}\)), `star = transpose` on \(\mathbb{R}\), `dotProduct_mulVec`. Exact; uses only `symm`.
+- `eigenvalues_monotone`: Mathlib `eigenvalues₀_antitone`, reversed by `Fin.rev`. Exact.
+- `eigenvalues_sum_zero`: Mathlib `IsHermitian.trace_eq_sum_eigenvalues`, reindexed by the order-sorting permutation, then `trace_zero`. Exact.
+- `eigenvalues_min_nonpos_max_nonneg`: from the ordering and the sum-zero identity. Exact.
+- `quadratic_form_eq_sum`: Mathlib `IsHermitian.spectral_theorem` (\(S=UDU^{*}\)), `star = transpose` on \(\mathbb{R}\), `dotProduct_mulVec`, then the same permutation of columns and eigenvalues. Exact; uses only `symm`.
 - `sum_sq_eigenCoords`: `U * star U = 1` for the unitary eigenvector matrix. Exact.
 - `quadratic_form_intermediate` / `intermediate_representation`: from the unit hypothesis, \(\eta_1^2=1-\eta_0^2-\eta_2^2\) (`Fin.sum_univ_three`, `linarith`), then `ring`. Exact. Trace zero is **not** used in this identity (as in the paper's proof).
 - Non-vacuity: `exampleStrain = diag(1,-1,0)` with `isSymm_diagonal` and a direct trace computation; `eigenvalues_eq_zero_iff`; direct evaluation at \(\xi=(1,0,0)\).
 
-Proposed fix for the ordering mismatch (not applied, pending approval): define
-the eigenvalues as Mathlib's `eigenvalues₀` (proved antitone by
-`eigenvalues₀_antitone`), so that index `1` is provably the middle eigenvalue,
-and prove the eigenvalue-ordering hypothesis of the paper's Section 2.
+The public eigenvalue family is Mathlib's `eigenvalues₀` (proved antitone by
+`eigenvalues₀_antitone`), reversed, so index `1` is the middle eigenvalue and
+the paper's ordering \(\lambda_1\le\lambda_2\le\lambda_3\) is encoded. Mathlib's
+own `IsHermitian.eigenvalues` (an arbitrary cardinality reindexing of
+`eigenvalues₀`) is used only as a stepping stone.
 
 ## Compile adaptations (no change to mathematical meaning)
 
@@ -149,6 +158,9 @@ in this repository (`v4.30.0-rc1`, commit
 No other Lean wording was changed in those adaptations. Later, the body of
 `intermediate_representation` was proved and the declarations in items 3–7
 above were added. The hypothesis of `stretching` was then corrected as described above.
+The public eigenvalue family was then switched to the increasing order
+described above, so that the intermediate-eigenvalue reading of Proposition 1.1
+is encoded and proved.
 
 ## Reproducibility
 
