@@ -1,0 +1,25 @@
+# Author: Benjamin Stanley Frohman
+name: Lean build and kernel check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: lake build and axiom report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: true
+          test: false
+          lint: false
+          use-mathlib-cache: true
+      - name: Print axioms and report sorry count
+        run: ./scripts/kernel_check.sh

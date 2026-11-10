@@ -1,0 +1,13 @@
+/.lake
+*.olean
+*.ilean
+*.trace
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.synctex.gz
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.bbl
+paper/*.blg

@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Strain-Tensor Eigenvalue Decomposition and Intermediate Alignment in 3D Navier–Stokes"
+type: software
+authors:
+  - family-names: Frohman
+    given-names: Benjamin Stanley
+    orcid: "https://orcid.org/0009-0006-7068-3718"
+    affiliation: Independent Researcher, Texas, United States
+    email: frohmanbenjamin@gmail.com
+license: Apache-2.0
+repository-code: "https://github.com/BenFrohman/frohmanian-strain-eigenvalue"
+keywords:
+  - strain-rate tensor
+  - eigenvalue decomposition
+  - vortex stretching
+  - Navier-Stokes
+  - Lean 4
+abstract: >-
+  Companion repository for a short algebraic note on the eigenvalue
+  decomposition of the symmetric, trace-free strain-rate tensor of a
+  divergence-free field, together with a Lean 4 skeleton. The Lean file
+  records the trace-sum identity for the eigenvalues and states the
+  intermediate-alignment rearrangement, which remains unproved (sorry).
+  The note is pointwise and unconditional; it does not prove integrability
+  of the L^∞ strain norm, Hypothesis B, or the Clay Navier–Stokes problem.
+  A kernel check is not a PDE or physical proof.
