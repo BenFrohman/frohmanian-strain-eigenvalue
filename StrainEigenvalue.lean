@@ -56,23 +56,20 @@ theorem eigenvalues_sum_zero (S : StrainTensor ℝ) :
     _ = S.mat.trace := S.isHermitian.trace_eq_sum_eigenvalues.symm
     _ = 0 := S.trace_zero
 
-/-- Quadratic form of the strain on a unit vector. -/
-def stretching (S : StrainTensor ℝ) (ξ : Fin 3 → ℝ) (hξ : ‖ξ‖ = 1) : ℝ :=
+/-- Quadratic form of the strain on a unit vector, written in eigen-coordinates.
+"Unit" is Euclidean: `∑ i, (ξ i)^2 = 1`. (On `Fin 3 → ℝ`, `‖ξ‖` is the sup
+norm, so the earlier hypothesis `‖ξ‖ = 1` did not say this; see
+`sum_sq_eq_one_not_imp_norm_eq_one`.) -/
+def stretching (S : StrainTensor ℝ) (ξ : Fin 3 → ℝ) (_hξ : ∑ i, (ξ i)^2 = 1) : ℝ :=
   ∑ i, eigenvalues S i * (ξ i)^2
 
 theorem intermediate_representation (S : StrainTensor ℝ) (ξ : Fin 3 → ℝ)
     (hξ : ∑ i, (ξ i)^2 = 1) :
-    stretching S ξ (by sorry) =
+    stretching S ξ hξ =
       eigenvalues S 1 +
       (eigenvalues S 0 - eigenvalues S 1) * (ξ 0)^2 +
       (eigenvalues S 2 - eigenvalues S 1) * (ξ 2)^2 := by
-  -- The proof hole in the statement above (the `‖ξ‖ = 1` argument) is NOT provable: on `Fin 3 → ℝ`,
-  -- `‖ξ‖` is Mathlib's sup norm, not the Euclidean norm. See
-  -- `sum_sq_eq_one_not_imp_norm_eq_one` below for a kernel-checked
-  -- counterexample. That hole is left as written pending approval of the
-  -- minimal correction described in the README.
-  --
-  -- The body itself is proved: substitute ξ₁² = 1 - ξ₀² - ξ₂² and rearrange.
+  -- Substitute ξ₁² = 1 - ξ₀² - ξ₂² and rearrange.
   have h1 : (ξ 1)^2 = 1 - (ξ 0)^2 - (ξ 2)^2 := by
     rw [Fin.sum_univ_three] at hξ
     linarith
@@ -80,7 +77,7 @@ theorem intermediate_representation (S : StrainTensor ℝ) (ξ : Fin 3 → ℝ)
   rw [h1]
   ring
 
-/-! ## Why the `‖ξ‖ = 1` hole in `intermediate_representation` cannot be filled -/
+/-! ## Why `stretching` takes `∑ i, (ξ i)^2 = 1` and not `‖ξ‖ = 1` -/
 
 /-- Counterexample: `ξ = (3/5, 4/5, 0)` has `∑ ξᵢ² = 1`, but its `Pi` (sup)
 norm is `4/5 ≠ 1`. So `∑ i, (ξ i)^2 = 1 → ‖ξ‖ = 1` is false on `Fin 3 → ℝ`. -/
