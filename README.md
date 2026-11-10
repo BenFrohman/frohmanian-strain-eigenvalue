@@ -83,6 +83,31 @@ unchanged.
 
 Sorry count: **0**. CI enforces zero `sorry`.
 
+## Lean hypotheses vs. paper assumptions
+
+| Lean hypothesis / choice | Paper assumption it encodes | Match? |
+|---|---|---|
+| `StrainTensor.mat : Matrix (Fin 3) (Fin 3) ℝ` | \(S\) is a real \(3\times3\) matrix at a point of \(\mathbb{T}^3\) | Yes (pointwise only; no field \(u\), no \(\mathbb{T}^3\)) |
+| `StrainTensor.symm : mat.IsSymm` | \(S=\tfrac12(\nabla u+\nabla u^T)\) is symmetric | Yes, but **assumed**, not derived from \(u\) |
+| `StrainTensor.trace_zero : mat.trace = 0` | \(\operatorname{tr}S=\nabla\cdot u=0\) | Yes, but **assumed**; divergence-free \(u\) is not formalized |
+| `hξ : ∑ i, (ξ i)^2 = 1` (`quadratic_form_intermediate`) | \(\xi=\omega/|\omega|\) is a Euclidean unit vector | Yes (vorticity and \(\omega\neq0\) not formalized) |
+| `hξ : ∑ i, (ξ i)^2 = 1` (`stretching`, `intermediate_representation`) | same, with \(\xi\) already in eigen-coordinates | Yes after the correction on this branch. The original `‖ξ‖ = 1` was the sup norm: **mismatch** (counterexample \((3/5,4/5,0)\)) |
+| `eigvecs S`, `eigenCoords S ξ = Uᵀξ` | orthonormal eigenbasis \(e_i\), \(\xi=\sum\xi_ie_i\) | Yes (Mathlib spectral theorem; orthonormality proved via `sum_sq_eigenCoords`) |
+| `eigenvalues S i`, `i = 0,1,2` | ordered \(\lambda_1\le\lambda_2\le\lambda_3\), \(\lambda_2\) = **intermediate** eigenvalue | **Mismatch.** `eigenvalues` is `eigenvalues₀` (antitone) composed with `Fintype.equivOfCardEq`, a choice-based reindexing, so Lean does **not** prove index `1` is the middle eigenvalue. The identity holds for every labelling, so it is still true, but "λ₂ is the intermediate eigenvalue" is not encoded |
+
+Proof steps and the rule each uses:
+
+- `eigenvalues_sum_zero`: Mathlib `IsHermitian.trace_eq_sum_eigenvalues`, then `trace_zero`. Exact.
+- `quadratic_form_eq_sum`: Mathlib `IsHermitian.spectral_theorem` (\(S=UDU^{*}\)), `star = transpose` on \(\mathbb{R}\), `dotProduct_mulVec`. Exact; uses only `symm`.
+- `sum_sq_eigenCoords`: `U * star U = 1` for the unitary eigenvector matrix. Exact.
+- `quadratic_form_intermediate` / `intermediate_representation`: from the unit hypothesis, \(\eta_1^2=1-\eta_0^2-\eta_2^2\) (`Fin.sum_univ_three`, `linarith`), then `ring`. Exact. Trace zero is **not** used in this identity (as in the paper's proof).
+- Non-vacuity: `exampleStrain = diag(1,-1,0)` with `isSymm_diagonal` and a direct trace computation; `eigenvalues_eq_zero_iff`; direct evaluation at \(\xi=(1,0,0)\).
+
+Proposed fix for the ordering mismatch (not applied, pending approval): define
+the eigenvalues as Mathlib's `eigenvalues₀` (proved antitone by
+`eigenvalues₀_antitone`), so that index `1` is provably the middle eigenvalue,
+and prove the eigenvalue-ordering hypothesis of the paper's Section 2.
+
 ## Compile adaptations (no change to mathematical meaning)
 
 The skeleton was originally written with `Matrix.IsHermitian.of_isSymm`
