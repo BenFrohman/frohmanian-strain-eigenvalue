@@ -13,12 +13,11 @@ the consequences of that identity for the local vortex-stretching term.
 
 ## Honest scope
 
-- **The paper's algebraic identities are formalized; one skeleton statement is ill-posed.**
-  The paper's Proposition 1.1 (intermediate-eigenvalue representation) is
-  proved in Lean on the actual quadratic form `ξ ⬝ᵥ (S *ᵥ ξ)` with no
-  `sorry` (`quadratic_form_intermediate`). The original skeleton theorem
-  `intermediate_representation` keeps **one** `sorry`, which sits in its
-  *statement* and cannot be filled (see below).
+- **The paper's algebraic identities are formalized, with 0 `sorry`.**
+  Proposition 1.1 (intermediate-eigenvalue representation) is proved on the
+  actual quadratic form `ξ ⬝ᵥ (S *ᵥ ξ)` (`quadratic_form_intermediate`),
+  and in eigen-coordinates (`intermediate_representation`). The skeleton's
+  unit-vector hypothesis was corrected (see below).
 - **This is not a Clay Millennium Navier–Stokes proof**, and it is not a
   regularity theorem for 3D Navier–Stokes. Large-data global regularity
   remains open.
@@ -59,6 +58,8 @@ All of the following use only `propext`, `Classical.choice`, `Quot.sound`
 5. `quadratic_form_intermediate` (paper Proposition 1.1): if
    \(\sum_i\xi_i^2=1\), then
    \(\xi\cdot S\xi=\lambda_1+(\lambda_0-\lambda_1)\eta_0^2+(\lambda_2-\lambda_1)\eta_2^2\).
+5a. `intermediate_representation`: the same identity for `stretching`
+   (eigen-coordinates).
 6. `sum_sq_eq_one_not_imp_norm_eq_one`: counterexample showing
    \(\sum_i\xi_i^2=1\not\Rightarrow\|\xi\|=1\) on `Fin 3 → ℝ`.
 7. Non-vacuity: `exampleStrain = diag(1, -1, 0)` is a `StrainTensor`;
@@ -66,30 +67,21 @@ All of the following use only `propext`, `Classical.choice`, `Quot.sound`
    `exampleStrain_intermediate_nontrivial` (for `ξ = (1,0,0)` the hypothesis
    holds and both sides of Proposition 1.1 equal `1`).
 
-## The remaining `sorry`: a false step in the skeleton statement
+## Correction to the skeleton statement (this branch)
 
-`stretching` takes a hypothesis `hξ : ‖ξ‖ = 1`, and
-`intermediate_representation` supplies it as `(by sorry)` from
-`∑ i, (ξ i)^2 = 1`. On `Fin 3 → ℝ`, Mathlib's `‖ξ‖` is the **sup norm**,
-not the Euclidean norm, so that step is false.
+The original skeleton gave `stretching` the hypothesis `hξ : ‖ξ‖ = 1` and
+`intermediate_representation` supplied it as `(by sorry)` from
+`∑ i, (ξ i)^2 = 1`. On `Fin 3 → ℝ`, Mathlib's `‖ξ‖` is the **sup norm**, so
+that step was false. Counterexample: `ξ = (3/5, 4/5, 0)` has `∑ ξᵢ² = 1` but
+`‖ξ‖ = 4/5`. Lean checks this (`sum_sq_eq_one_not_imp_norm_eq_one`).
 
-Counterexample: `ξ = (3/5, 4/5, 0)` has `∑ ξᵢ² = 9/25 + 16/25 = 1`, but
-`‖ξ‖ = max |ξᵢ| = 4/5 ≠ 1`. Lean checks this
-(`sum_sq_eq_one_not_imp_norm_eq_one`).
+Minimal correction: `stretching` now takes `(hξ : ∑ i, (ξ i)^2 = 1)`, the
+Euclidean unit condition the paper means, and `intermediate_representation`
+passes `hξ`. `stretching` never used the hypothesis, so its value is
+unchanged, and the right-hand side of `intermediate_representation` is
+unchanged.
 
-The body of `intermediate_representation` (substitute
-\(\xi_1^2=1-\xi_0^2-\xi_2^2\) and rearrange) **is** proved, but because the
-`sorry` is in the statement, `#print axioms` for this theorem still lists
-`sorryAx`. It was not removed, because that would change the statement.
-
-**Proposed minimal correction (pending approval):** change the hypothesis of
-`stretching` from `(hξ : ‖ξ‖ = 1)` to `(hξ : ∑ i, (ξ i)^2 = 1)` and pass `hξ`
-in place of `(by sorry)`. `stretching` never uses the hypothesis, so its
-value is unchanged, and the hypothesis then says what the paper means by a
-unit vector. (An alternative is to use `EuclideanSpace ℝ (Fin 3)`, which
-changes more code.)
-
-Sorry count: **1** (in the statement of `intermediate_representation`).
+Sorry count: **0**. CI enforces zero `sorry`.
 
 ## Compile adaptations (no change to mathematical meaning)
 
@@ -131,8 +123,7 @@ in this repository (`v4.30.0-rc1`, commit
 
 No other Lean wording was changed in those adaptations. Later, the body of
 `intermediate_representation` was proved and the declarations in items 3–7
-above were added. The statement of `intermediate_representation` and the
-definition of `stretching` are unchanged.
+above were added. The hypothesis of `stretching` was then corrected as described above.
 
 ## Reproducibility
 
