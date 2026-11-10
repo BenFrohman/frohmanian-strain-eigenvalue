@@ -15,11 +15,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Persist the downloaded Mathlib .ltar files and the Lake packages between
+      # runs, so a later run only fetches what is missing.
+      - name: Cache Mathlib download and Lake packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/mathlib
+            .lake/packages
+          key: mathlib-${{ runner.os }}-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
+          restore-keys: |
+            mathlib-${{ runner.os }}-
+
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # `lake exe cache get` skips files that are already present, so each retry
+      # only fetches what a previous attempt failed to download. If every attempt
+      # fails, continue: `lake build` below compiles whatever is still missing.
+      - name: Fetch Mathlib cache (with retries)
+        run: |
+          for attempt in 1 2 3 4 5; do
+            echo "lake exe cache get: attempt ${attempt}/5"
+            if lake exe cache get; then
+              echo "Mathlib cache download complete."
+              exit 0
+            fi
+            if [ "$attempt" -lt 5 ]; then
+              delay=$((attempt * 20))
+              echo "Download failed; retrying in ${delay}s."
+              sleep "$delay"
+            fi
+          done
+          echo "::warning::Mathlib cache download failed after 5 attempts; falling back to building missing files with lake build."
+
       - uses: leanprover/lean-action@v1
         with:
           build: true
           test: false
           lint: false
-          use-mathlib-cache: true
+          use-mathlib-cache: false
+          use-github-cache: false
+
       - name: Print axioms and report sorry count
         run: ./scripts/kernel_check.sh
