@@ -12,14 +12,14 @@
 \newtheorem{remark}[theorem]{Remark}
 
 \title{Strain-Tensor Eigenvalue Decomposition\\and Intermediate Alignment in 3D Navier--Stokes}
-\author{Benjamin Stanley Frohman}
-\date{\today}
+\author{Benjamin Stanley Frohman\\\small Independent Researcher, Texas, United States\\\small ORCID 0009-0006-7068-3718}
+\date{10 November 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We record the elementary algebraic decomposition of the symmetric strain-rate tensor of a divergence-free velocity field and its consequences for the local vortex-stretching term. Because the trace of the strain vanishes, the intermediate eigenvalue controls the leading contribution once the vorticity direction is aligned with the intermediate eigenvector. The identities are pointwise and unconditional; they do not by themselves produce an a priori bound on the \(L^\infty\) norm of the strain and therefore leave the supercritical gap (Hypothesis~B) open.
+We record the elementary algebraic decomposition of the symmetric strain-rate tensor of a divergence-free velocity field and its consequences for the local vortex-stretching term. Because the trace of the strain vanishes, the intermediate eigenvalue controls the leading contribution once the vorticity direction is aligned with the intermediate eigenvector. The identities are pointwise and unconditional, and the trace identity and the intermediate-eigenvalue representation are checked in Lean~4 (Section~\ref{sec:lean}); the geometric and analytic discussion is not formalized. The identities do not by themselves produce an a priori bound on the \(L^\infty\) norm of the strain and therefore leave the supercritical gap (Hypothesis~B) open.
 \end{abstract}
 
 \section{Eigenvalue structure of the strain tensor}
@@ -62,11 +62,11 @@ Under a Hölder condition
 \[
 |\boldsymbol{\xi}(x)-\boldsymbol{\xi}(y)|\le K|x-y|^\alpha,\qquad\alpha\ge\frac12,
 \]
-on high-vorticity sets, the Constantin--Fefferman singular integral that represents \(\boldsymbol{\xi}\cdot S\boldsymbol{\xi}\) desingularizes. The eigenvalue decomposition isolates the same phenomenon: the integral of the deviation terms is controlled by the angular dispersion functional
+on high-vorticity sets, the Constantin--Fefferman singular integral that represents \(\boldsymbol{\xi}\cdot S\boldsymbol{\xi}\) desingularizes. Heuristically, the eigenvalue decomposition isolates the same phenomenon; we do \emph{not} prove here that the integral of the deviation terms is controlled by the angular dispersion functional
 \[
 \mathcal{D}_{\boldsymbol{\xi}}(t)=\iint_{\Omega_M\times\Omega_M}|\omega(x)|^2|\omega(y)|^2|\boldsymbol{\xi}(x)\times\boldsymbol{\xi}(y)|^2\,K_{\mathrm{BS}}(x-y)\,dx\,dy,
 \]
-while the intermediate eigenvalue \(\lambda_2\) remains the principal stretching rate.
+and this comparison is stated only as motivation.
 
 \section{Conditional status}
 
@@ -75,6 +75,21 @@ The identities of this note are pointwise and algebraic. They do not imply integ
 \int_0^T\|S(t)\|_{L^\infty}\,dt<\infty
 \]
 for arbitrary large smooth data. The supercritical gap between the energy inequality and the Beale--Kato--Majda criterion remains open.
+
+
+\section{Lean formalization: exact scope}\label{sec:lean}
+
+The repository \url{https://github.com/BenFrohman/frohmanian-strain-eigenvalue} contains \texttt{StrainEigenvalue.lean} (Lean~4.30.0-rc1, Mathlib \texttt{v4.30.0-rc1}, commit \texttt{0c154d6}). A \texttt{StrainTensor} is a real symmetric \(3\times3\) matrix with zero trace. Lean indices \(0,1,2\) play the roles of \(1,2,3\) here. Mathlib's eigenvalue indexing is \emph{not} proved to be sorted, so the ordering \(\lambda_1\le\lambda_2\le\lambda_3\) and the signs \(\lambda_1\le0\le\lambda_3\) are not used or proved in Lean. The kernel checks the following, using only the axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}:
+\begin{itemize}
+\item \texttt{eigenvalues\_sum\_zero}: \(\lambda_1+\lambda_2+\lambda_3=0\).
+\item \texttt{quadratic\_form\_eq\_sum}: with \(U\) the orthonormal eigenvector matrix from Mathlib's spectral theorem and \(\eta=U^{T}\xi\), \(\xi\cdot S\xi=\sum_i\lambda_i\eta_i^2\) for every \(\xi\in\mathbb{R}^3\) (equation~\eqref{eq:quadratic}).
+\item \texttt{sum\_sq\_eigenCoords}: \(\sum_i\eta_i^2=\sum_i\xi_i^2\).
+\item \texttt{quadratic\_form\_intermediate}: if \(\sum_i\xi_i^2=1\), then \(\xi\cdot S\xi=\lambda_2+(\lambda_1-\lambda_2)\eta_1^2+(\lambda_3-\lambda_2)\eta_3^2\). This is Proposition~1.1.
+\item Non-vacuity: \(S=\operatorname{diag}(1,-1,0)\) is a \texttt{StrainTensor} with eigenvalues not all zero, and for \(\xi=(1,0,0)\) both sides of Proposition~1.1 equal \(1\).
+\end{itemize}
+The original skeleton theorem \texttt{intermediate\_representation} is also kept as written. Its body (the rearrangement) is proved, but its statement passes a proof of \(\|\xi\|=1\) to \texttt{stretching}, and on \(\mathrm{Fin}\,3\to\mathbb{R}\) Mathlib's \(\|\cdot\|\) is the sup norm. That step is false: \(\xi=(3/5,4/5,0)\) has \(\sum\xi_i^2=1\) but \(\|\xi\|_\infty=4/5\). Lean checks this counterexample (\texttt{sum\_sq\_eq\_one\_not\_imp\_norm\_eq\_one}). So \texttt{intermediate\_representation} still has one \texttt{sorry} in its statement, and that \texttt{sorry} cannot be removed without changing the statement. The minimal correction is to give \texttt{stretching} the hypothesis \(\sum_i\xi_i^2=1\) in place of \(\|\xi\|=1\). Proposition~1.1 itself does not depend on this, because \texttt{quadratic\_form\_intermediate} has no \texttt{sorry}.
+
+Nothing about vorticity, Navier--Stokes dynamics, H\"older alignment, the Constantin--Fefferman kernel, \(\mathcal{D}_{\boldsymbol\xi}\), or Hypothesis~B is formalized. A kernel check establishes the algebraic statements above and nothing more.
 
 \begin{thebibliography}{9}
 \bibitem{ConstantinFefferman1993} P. Constantin and C. Fefferman, Direction of vorticity and the problem of global regularity for the Navier--Stokes equations, Indiana Univ. Math. J. \textbf{42} (1993), 775--789.
