@@ -1,0 +1,81 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Strain-Tensor Eigenvalue Decomposition\\and Intermediate Alignment in 3D Navier--Stokes}
+\author{Benjamin Stanley Frohman}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We record the elementary algebraic decomposition of the symmetric strain-rate tensor of a divergence-free velocity field and its consequences for the local vortex-stretching term. Because the trace of the strain vanishes, the intermediate eigenvalue controls the leading contribution once the vorticity direction is aligned with the intermediate eigenvector. The identities are pointwise and unconditional; they do not by themselves produce an a priori bound on the \(L^\infty\) norm of the strain and therefore leave the supercritical gap (Hypothesis~B) open.
+\end{abstract}
+
+\section{Eigenvalue structure of the strain tensor}
+
+Let \(u\) be a smooth divergence-free vector field on \(\mathbb{T}^3\) and let
+\[
+S=\frac12\bigl(\nabla u+(\nabla u)^T\bigr)
+\]
+be the symmetric strain-rate tensor. Then \(\operatorname{tr}S=\nabla\cdot u=0\), so the three real eigenvalues satisfy
+\begin{equation}\label{eq:trace}
+\lambda_1\le\lambda_2\le\lambda_3,\qquad\lambda_1+\lambda_2+\lambda_3=0.
+\end{equation}
+At each point where \(S\) is continuous there exists an orthonormal eigenbasis \(\{e_1,e_2,e_3\}\). Writing the unit vorticity direction
+\[
+\boldsymbol{\xi}=\frac{\omega}{|\omega|}=\xi_1 e_1+\xi_2 e_2+\xi_3 e_3
+\]
+(with \(\xi_1^2+\xi_2^2+\xi_3^2=1\)) one obtains the quadratic form
+\begin{equation}\label{eq:quadratic}
+\boldsymbol{\xi}\cdot S\boldsymbol{\xi}=\lambda_1\xi_1^2+\lambda_2\xi_2^2+\lambda_3\xi_3^2.
+\end{equation}
+
+\begin{proposition}[Intermediate-eigenvalue representation]
+\[
+\boldsymbol{\xi}\cdot S\boldsymbol{\xi}
+=\lambda_2+(\lambda_1-\lambda_2)\xi_1^2+(\lambda_3-\lambda_2)\xi_3^2.
+\]
+\end{proposition}
+
+\begin{proof}
+Substitute \(\xi_2^2=1-\xi_1^2-\xi_3^2\) into~\eqref{eq:quadratic} and rearrange.
+\end{proof}
+
+\section{Geometric interpretation}
+
+Because \(\lambda_1\le 0\le\lambda_3\), the deviation terms \((\lambda_1-\lambda_2)\xi_1^2\) and \((\lambda_3-\lambda_2)\xi_3^2\) measure the departure of \(\boldsymbol{\xi}\) from the intermediate axis \(e_2\). Classical geometric criteria (Neustupa--Penel, Miller) observe that intense stretching in turbulent flows correlates with preferential alignment of \(\boldsymbol{\xi}\) with \(e_2\) rather than with the most extensional eigenvector \(e_3\). The algebraic identity above makes this statement precise: the leading contribution is exactly \(\lambda_2\), while the remainder is controlled by the angular dispersion of \(\boldsymbol{\xi}\).
+
+\section{Relation to the alignment kernel}
+
+Under a Hölder condition
+\[
+|\boldsymbol{\xi}(x)-\boldsymbol{\xi}(y)|\le K|x-y|^\alpha,\qquad\alpha\ge\frac12,
+\]
+on high-vorticity sets, the Constantin--Fefferman singular integral that represents \(\boldsymbol{\xi}\cdot S\boldsymbol{\xi}\) desingularizes. The eigenvalue decomposition isolates the same phenomenon: the integral of the deviation terms is controlled by the angular dispersion functional
+\[
+\mathcal{D}_{\boldsymbol{\xi}}(t)=\iint_{\Omega_M\times\Omega_M}|\omega(x)|^2|\omega(y)|^2|\boldsymbol{\xi}(x)\times\boldsymbol{\xi}(y)|^2\,K_{\mathrm{BS}}(x-y)\,dx\,dy,
+\]
+while the intermediate eigenvalue \(\lambda_2\) remains the principal stretching rate.
+
+\section{Conditional status}
+
+The identities of this note are pointwise and algebraic. They do not imply integrability of \(\|S\|_{L^\infty}\) in time. In particular, they do not prove Hypothesis~B
+\[
+\int_0^T\|S(t)\|_{L^\infty}\,dt<\infty
+\]
+for arbitrary large smooth data. The supercritical gap between the energy inequality and the Beale--Kato--Majda criterion remains open.
+
+\begin{thebibliography}{9}
+\bibitem{ConstantinFefferman1993} P. Constantin and C. Fefferman, Direction of vorticity and the problem of global regularity for the Navier--Stokes equations, Indiana Univ. Math. J. \textbf{42} (1993), 775--789.
+\bibitem{NeustupaPenel1999} J. Neustupa and P. Penel, Regularity of a suitable weak solution to the Navier--Stokes equations as a consequence of the regularity of one velocity component, in \emph{Applied Nonlinear Analysis}, Kluwer, 1999, pp. 391--402.
+\end{thebibliography}
+
+\end{document}
