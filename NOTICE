@@ -6,10 +6,10 @@ Author: Benjamin Stanley Frohman
 Code in this repository is licensed under the Apache License, Version 2.0
 (see LICENSE).
 
-The paper (LaTeX source and PDF under paper/) is licensed under the
-Creative Commons Attribution 4.0 International License (see LICENSE-paper).
+The paper (LaTeX source and PDF under paper/) is also licensed under the
+Apache License, Version 2.0 (see LICENSE-paper).
 
-This repository is a Lean 4 skeleton of pointwise algebraic identities
+This repository is a Lean 4 formalization (0 sorry) of pointwise algebraic identities
 for a symmetric, trace-free 3×3 strain tensor, together with a short
 note. It is not a solution of the Clay Millennium Navier–Stokes problem.
 A successful Lean kernel check is not a PDE proof or a physical proof,

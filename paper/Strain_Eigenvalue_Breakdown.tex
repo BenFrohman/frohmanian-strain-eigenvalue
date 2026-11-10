@@ -5,14 +5,16 @@
 
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
 \usepackage{hyperref}
+\emergencystretch=3em
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{remark}[theorem]{Remark}
 
 \title{Strain-Tensor Eigenvalue Decomposition\\and Intermediate Alignment in 3D Navier--Stokes}
-\author{Benjamin Stanley Frohman\\\small Independent Researcher, Texas, United States\\\small ORCID 0009-0006-7068-3718}
+\author{Benjamin Stanley Frohman\thanks{\textcopyright\ 2026 Benjamin Stanley Frohman. Distributed under the Apache License 2.0.}\\\small Independent Researcher, Texas, United States\\\small ORCID \href{https://orcid.org/0009-0006-7068-3718}{0009-0006-7068-3718}\\\small \href{mailto:frohmanbenjamin@gmail.com}{frohmanbenjamin@gmail.com}}
 \date{10 November 2026}
 
 \begin{document}
@@ -28,7 +30,7 @@ Let \(u\) be a smooth divergence-free vector field on \(\mathbb{T}^3\) and let
 \[
 S=\frac12\bigl(\nabla u+(\nabla u)^T\bigr)
 \]
-be the symmetric strain-rate tensor. Then \(\operatorname{tr}S=\nabla\cdot u=0\), so the three real eigenvalues satisfy
+be the symmetric strain-rate tensor. Then \(\operatorname{tr}S=\nabla\cdot u=0\), so the three real eigenvalues satisfy (cf.\ Betchov~\cite{Betchov1956})
 \begin{equation}\label{eq:trace}
 \lambda_1\le\lambda_2\le\lambda_3,\qquad\lambda_1+\lambda_2+\lambda_3=0.
 \end{equation}
@@ -54,7 +56,7 @@ Substitute \(\xi_2^2=1-\xi_1^2-\xi_3^2\) into~\eqref{eq:quadratic} and rearrange
 
 \section{Geometric interpretation}
 
-Because \(\lambda_1\le 0\le\lambda_3\), the deviation terms \((\lambda_1-\lambda_2)\xi_1^2\) and \((\lambda_3-\lambda_2)\xi_3^2\) measure the departure of \(\boldsymbol{\xi}\) from the intermediate axis \(e_2\). Classical geometric criteria (Neustupa--Penel, Miller) observe that intense stretching in turbulent flows correlates with preferential alignment of \(\boldsymbol{\xi}\) with \(e_2\) rather than with the most extensional eigenvector \(e_3\). The algebraic identity above makes this statement precise: the leading contribution is exactly \(\lambda_2\), while the remainder is controlled by the angular dispersion of \(\boldsymbol{\xi}\).
+Because \(\lambda_1\le 0\le\lambda_3\), the deviation terms \((\lambda_1-\lambda_2)\xi_1^2\) and \((\lambda_3-\lambda_2)\xi_3^2\) measure the departure of \(\boldsymbol{\xi}\) from the intermediate axis \(e_2\). Direct numerical simulations (Ashurst, Kerstein, Kerr and Gibson~\cite{AKKG1987}) show that intense stretching in turbulent flows correlates with preferential alignment of \(\boldsymbol{\xi}\) with \(e_2\) rather than with the most extensional eigenvector \(e_3\). Regularity criteria involving only the positive part \(\lambda_2^+\) of the intermediate eigenvalue are due to Neustupa and Penel~\cite{NeustupaPenel2001,NeustupaPenel2003,NeustupaPenel2005} and Miller~\cite{Miller2020,Miller2020Addendum}. The algebraic identity above makes this statement precise: the leading contribution is exactly \(\lambda_2\), while the remainder is controlled by the angular dispersion of \(\boldsymbol{\xi}\).
 
 \section{Relation to the alignment kernel}
 
@@ -62,7 +64,7 @@ Under a Hölder condition
 \[
 |\boldsymbol{\xi}(x)-\boldsymbol{\xi}(y)|\le K|x-y|^\alpha,\qquad\alpha\ge\frac12,
 \]
-on high-vorticity sets, the Constantin--Fefferman singular integral that represents \(\boldsymbol{\xi}\cdot S\boldsymbol{\xi}\) desingularizes. Heuristically, the eigenvalue decomposition isolates the same phenomenon; we do \emph{not} prove here that the integral of the deviation terms is controlled by the angular dispersion functional
+on high-vorticity sets (Constantin and Fefferman~\cite{ConstantinFefferman1993} treat the Lipschitz case \(\alpha=1\); the relaxation to \(\alpha\ge\frac12\) is due to Beir\~ao da Veiga and Berselli~\cite{BeiraoBerselli2002}), the Constantin--Fefferman singular integral that represents \(\boldsymbol{\xi}\cdot S\boldsymbol{\xi}\) desingularizes. Heuristically, the eigenvalue decomposition isolates the same phenomenon; we do \emph{not} prove here that the integral of the deviation terms is controlled by the angular dispersion functional
 \[
 \mathcal{D}_{\boldsymbol{\xi}}(t)=\iint_{\Omega_M\times\Omega_M}|\omega(x)|^2|\omega(y)|^2|\boldsymbol{\xi}(x)\times\boldsymbol{\xi}(y)|^2\,K_{\mathrm{BS}}(x-y)\,dx\,dy,
 \]
@@ -74,7 +76,7 @@ The identities of this note are pointwise and algebraic. They do not imply integ
 \[
 \int_0^T\|S(t)\|_{L^\infty}\,dt<\infty
 \]
-for arbitrary large smooth data. The supercritical gap between the energy inequality and the Beale--Kato--Majda criterion remains open.
+for arbitrary large smooth data; a time-integrable bound on \(\|S\|_{L^\infty}\) would require further hypotheses that remain open. The note makes no claim about the Clay Millennium problem. The supercritical gap between the energy inequality and the Beale--Kato--Majda criterion remains open.
 
 
 \section{Lean formalization: exact scope}\label{sec:lean}
@@ -93,9 +95,16 @@ The theorem \texttt{intermediate\_representation} proves the same identity for \
 
 Nothing about vorticity, Navier--Stokes dynamics, H\"older alignment, the Constantin--Fefferman kernel, \(\mathcal{D}_{\boldsymbol\xi}\), or Hypothesis~B is formalized. A kernel check establishes the algebraic statements above and nothing more.
 
-\begin{thebibliography}{9}
-\bibitem{ConstantinFefferman1993} P. Constantin and C. Fefferman, Direction of vorticity and the problem of global regularity for the Navier--Stokes equations, Indiana Univ. Math. J. \textbf{42} (1993), 775--789.
-\bibitem{NeustupaPenel1999} J. Neustupa and P. Penel, Regularity of a suitable weak solution to the Navier--Stokes equations as a consequence of the regularity of one velocity component, in \emph{Applied Nonlinear Analysis}, Kluwer, 1999, pp. 391--402.
+\begin{thebibliography}{99}
+\bibitem{ConstantinFefferman1993} P. Constantin and C. Fefferman, Direction of vorticity and the problem of global regularity for the Navier--Stokes equations, Indiana Univ. Math. J. \textbf{42} (1993), 775--789. \href{https://doi.org/10.1512/iumj.1993.42.42034}{doi:10.1512/iumj.1993.42.42034}.
+\bibitem{Betchov1956} R. Betchov, An inequality concerning the production of vorticity in isotropic turbulence, J. Fluid Mech. \textbf{1} (1956), no.~5, 497--504. \href{https://doi.org/10.1017/S0022112056000317}{doi:10.1017/S0022112056000317}.
+\bibitem{AKKG1987} W. T. Ashurst, A. R. Kerstein, R. M. Kerr and C. H. Gibson, Alignment of vorticity and scalar gradient with strain rate in simulated Navier--Stokes turbulence, Phys. Fluids \textbf{30} (1987), no.~8, 2343--2353. \href{https://doi.org/10.1063/1.866513}{doi:10.1063/1.866513}.
+\bibitem{BeiraoBerselli2002} H. Beir\~ao da Veiga and L. C. Berselli, On the regularizing effect of the vorticity direction in incompressible viscous flows, Differential Integral Equations \textbf{15} (2002), no.~3, 345--356. \href{https://doi.org/10.57262/die/1356060864}{doi:10.57262/die/1356060864}.
+\bibitem{NeustupaPenel2001} J. Neustupa and P. Penel, Anisotropic and geometric criteria for interior regularity of weak solutions to the 3D Navier--Stokes equations, in \emph{Mathematical Fluid Mechanics: Recent Results and Open Questions}, Birkh\"auser, Basel, 2001, pp.~237--265. \href{https://doi.org/10.1007/978-3-0348-8243-9_10}{doi:10.1007/978-3-0348-8243-9\_10}.
+\bibitem{NeustupaPenel2003} J. Neustupa and P. Penel, The role of eigenvalues and eigenvectors of the symmetrized gradient of velocity in the theory of the Navier--Stokes equations, C. R. Math. Acad. Sci. Paris \textbf{336} (2003), no.~10, 805--810. \href{https://doi.org/10.1016/S1631-073X(03)00174-2}{doi:10.1016/S1631-073X(03)00174-2}.
+\bibitem{NeustupaPenel2005} J. Neustupa and P. Penel, Regularity of a weak solution to the Navier--Stokes equation in dependence on eigenvalues and eigenvectors of the rate of deformation tensor, in \emph{Trends in Partial Differential Equations of Mathematical Physics}, Progr. Nonlinear Differential Equations Appl. \textbf{61}, Birkh\"auser, Basel, 2005, pp.~197--212. \href{https://doi.org/10.1007/3-7643-7317-2_15}{doi:10.1007/3-7643-7317-2\_15}.
+\bibitem{Miller2020} E. Miller, A regularity criterion for the Navier--Stokes equation involving only the middle eigenvalue of the strain tensor, Arch. Ration. Mech. Anal. \textbf{235} (2020), no.~1, 99--139. \href{https://doi.org/10.1007/s00205-019-01419-z}{doi:10.1007/s00205-019-01419-z}.
+\bibitem{Miller2020Addendum} E. Miller, Addendum to: A regularity criterion for the Navier--Stokes equation involving only the middle eigenvalue of the strain tensor, Arch. Ration. Mech. Anal. \textbf{237} (2020), no.~3, 1173--1175. \href{https://doi.org/10.1007/s00205-020-01527-1}{doi:10.1007/s00205-020-01527-1}.
 \end{thebibliography}
 
 \end{document}

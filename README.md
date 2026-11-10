@@ -34,7 +34,9 @@ the consequences of that identity for the local vortex-stretching term.
 - Not formalized: vorticity, Navier–Stokes dynamics, Hölder conditions on
   the vorticity direction, Constantin–Fefferman desingularization, the
   angular-dispersion functional \(\mathcal{D}_{\boldsymbol{\xi}}\), and the
-  classical geometric criteria (Neustupa–Penel, Miller).
+  vorticity–strain alignment statistics (Ashurst–Kerstein–Kerr–Gibson 1987),
+  and the λ₂⁺ regularity criteria (Neustupa–Penel 2001/2003/2005; Miller,
+  ARMA 235 (2020) and addendum).
 - Eigenvalues are Mathlib's antitone family `IsHermitian.eigenvalues₀`,
   reversed, so they are increasing: \(\lambda_0\le\lambda_1\le\lambda_2\)
   (paper: \(\lambda_1\le\lambda_2\le\lambda_3\)). Lean index `1` is proved
@@ -73,7 +75,7 @@ All of the following use only `propext`, `Classical.choice`, `Quot.sound`
    `exampleStrain_intermediate_nontrivial` (for `ξ = (1,0,0)` the hypothesis
    holds and both sides of Proposition 1.1 equal `1`).
 
-## Correction to the skeleton statement (this branch)
+## Correction to the skeleton statement
 
 The original skeleton gave `stretching` the hypothesis `hξ : ‖ξ‖ = 1` and
 `intermediate_representation` supplied it as `(by sorry)` from
@@ -97,7 +99,7 @@ Sorry count: **0**. CI enforces zero `sorry`.
 | `StrainTensor.symm : mat.IsSymm` | \(S=\tfrac12(\nabla u+\nabla u^T)\) is symmetric | Yes, but **assumed**, not derived from \(u\) |
 | `StrainTensor.trace_zero : mat.trace = 0` | \(\operatorname{tr}S=\nabla\cdot u=0\) | Yes, but **assumed**; divergence-free \(u\) is not formalized |
 | `hξ : ∑ i, (ξ i)^2 = 1` (`quadratic_form_intermediate`) | \(\xi=\omega/|\omega|\) is a Euclidean unit vector | Yes (vorticity and \(\omega\neq0\) not formalized) |
-| `hξ : ∑ i, (ξ i)^2 = 1` (`stretching`, `intermediate_representation`) | same, with \(\xi\) already in eigen-coordinates | Yes after the correction on this branch. The original `‖ξ‖ = 1` was the sup norm: **mismatch** (counterexample \((3/5,4/5,0)\)) |
+| `hξ : ∑ i, (ξ i)^2 = 1` (`stretching`, `intermediate_representation`) | same, with \(\xi\) already in eigen-coordinates | Yes after the correction. The original `‖ξ‖ = 1` was the sup norm: **mismatch** (counterexample \((3/5,4/5,0)\)) |
 | `eigvecs S`, `eigenCoords S ξ = Uᵀξ` | orthonormal eigenbasis \(e_i\), \(\xi=\sum\xi_ie_i\) | Yes (Mathlib spectral theorem; orthonormality proved via `sum_sq_eigenCoords`) |
 | `eigenvalues S i`, `i = 0,1,2` | ordered \(\lambda_1\le\lambda_2\le\lambda_3\), \(\lambda_2\) = **intermediate** eigenvalue | **Yes.** Public `eigenvalues` is Mathlib's antitone `eigenvalues₀`, reversed, so \(\lambda_0\le\lambda_1\le\lambda_2\) (`eigenvalues_ordered`). Index `1` is the intermediate eigenvalue. Eigenvectors and `eigenCoords` use the same order. |
 
@@ -168,7 +170,7 @@ is encoded and proved.
   (`0c154d67103f74be3a0f2c509f72ccbf5be9f2a7`), pinned in `lean-toolchain`
   and `lake-manifest.json` to the same versions as
   `frohmanian-metriplectic-ns`.
-- One-command rebuild: `lake exe cache get && lake build`
+- Build only: `lake exe cache get && lake build`
 - Kernel / sorry report: `./scripts/kernel_check.sh` after a successful
   build (`#print axioms` for every listed declaration; sorry tokens are counted
   and reported; they fail the job only if the file contains none, in
@@ -177,8 +179,29 @@ is encoded and proved.
 - The committed PDF under `paper/` is compiled from the committed `.tex`
   with Tectonic (`tectonic paper/Strain_Eigenvalue_Breakdown.tex`). The
   source uses a fixed date (10 November 2026).
-- Commit SHA: recorded on GitHub after the initial push; rebuilds should
-  name that commit.
+- Commit: `StrainEigenvalue.lean` was last changed in `b9b9a1f`
+  (merged to `main` as `d87967d`). It was re-verified unchanged at the
+  commit that added this paragraph; the Zenodo v4 record
+  ([10.5281/zenodo.24083477](https://doi.org/10.5281/zenodo.24083477),
+  concept DOI) links that exact commit tree. Rebuilds should name that
+  commit.
+- Verified locally on 10 November 2026 with `lake build` (2565 jobs, no
+  errors) and `./scripts/kernel_check.sh`: sorry count 0, and every listed
+  declaration reports
+
+  ```
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+  ```
+
+  for `eigenvalues_sum_zero`, `intermediate_representation`,
+  `StrainTensor.isHermitian`, `sum_sq_eq_one_not_imp_norm_eq_one`,
+  `quadratic_form_eq_sum`, `sum_sq_eigenCoords`,
+  `quadratic_form_intermediate`, `exampleStrain_eigenvalues_ne_zero`,
+  `exampleStrain_intermediate_nontrivial`, `eigenvalues_monotone`,
+  `eigenvalues_ordered`, `eigenvalues_min_nonpos_max_nonneg`,
+  `exampleStrain_eigenvalues_eq`.
+- One-command rebuild and check from a clean clone:
+  `lake exe cache get && lake build && ./scripts/kernel_check.sh`
 
 ## Related repositories
 
@@ -191,4 +214,7 @@ is encoded and proved.
 ## License
 
 - Code: Apache License 2.0 (`LICENSE`).
-- Paper (LaTeX and PDF): CC BY 4.0 (`LICENSE-paper`).
+- Paper (LaTeX and PDF): Apache License 2.0 (`LICENSE-paper`), matching
+  the Zenodo record.
+
+© 2026 Benjamin Stanley Frohman

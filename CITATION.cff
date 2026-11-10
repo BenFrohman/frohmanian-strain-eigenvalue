@@ -2,6 +2,8 @@ cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
 title: "Strain-Tensor Eigenvalue Decomposition and Intermediate Alignment in 3D Navier–Stokes"
 type: software
+version: "v4"
+date-released: "2026-11-10"
 authors:
   - family-names: Frohman
     given-names: Benjamin Stanley
@@ -19,9 +21,12 @@ keywords:
 abstract: >-
   Companion repository for a short algebraic note on the eigenvalue
   decomposition of the symmetric, trace-free strain-rate tensor of a
-  divergence-free field, together with a Lean 4 skeleton. The Lean file
-  records the trace-sum identity for the eigenvalues and states the
-  intermediate-alignment rearrangement, which remains unproved (sorry).
-  The note is pointwise and unconditional; it does not prove integrability
-  of the L^∞ strain norm, Hypothesis B, or the Clay Navier–Stokes problem.
+  divergence-free field, together with a Lean 4 formalization. Lean proves,
+  with 0 sorry and only the axioms propext, Classical.choice and Quot.sound,
+  the eigenvalue ordering λ₁ ≤ λ₂ ≤ λ₃, the trace-sum identity, the signs
+  λ₁ ≤ 0 ≤ λ₃, and the intermediate-eigenvalue representation of the
+  quadratic form ξ·Sξ (Proposition 1.1). The note is strictly algebraic and
+  pointwise; it does not prove Hypothesis B, and a time-integrable bound on
+  the L^∞ strain norm would require further hypotheses that remain open.
+  No claim is made about the Clay Navier–Stokes problem.
   A kernel check is not a PDE or physical proof.
