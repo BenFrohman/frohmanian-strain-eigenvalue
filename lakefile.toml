@@ -1,4 +1,4 @@
--- Author: Benjamin Stanley Frohman
+# Author: Benjamin Stanley Frohman
 name = "frohmanian_strain_eigenvalue"
 version = "0.1.0"
 defaultTargets = ["StrainEigenvalue"]

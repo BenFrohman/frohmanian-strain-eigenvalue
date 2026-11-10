@@ -80,6 +80,10 @@ in this repository (`v4.30.0-rc1`, commit
    `isHermitian` that uses `IsHermitian.ext` and `star_trivial` on
    \(\mathbb{R}\). The statements of `eigenvalues` and
    `eigenvalues_sum_zero` are unchanged.
+3. `lakefile.toml` originally started with a Lean-style `--` comment for
+   the author header. Lake's TOML parser rejected it (`unexpected 'A';
+   expected '='`). The header is now a TOML `#` comment. No package or
+   pin change.
 
 No other Lean wording was changed. The two `sorry` tokens were left in
 place.
