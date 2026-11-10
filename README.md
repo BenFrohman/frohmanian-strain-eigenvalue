@@ -50,7 +50,7 @@ In `StrainEigenvalue.lean`:
    symmetric \(3\times 3\) matrix with vanishing trace), the sum of the
    three eigenvalues of the associated Hermitian matrix is zero. This is
    the standard trace–eigenvalue identity plus `trace_zero`.
-2. `isHermitian` (proved; compile adaptation, see below): on \(\mathbb{R}\),
+2. `StrainTensor.isHermitian` (proved; compile adaptation, see below): on \(\mathbb{R}\),
    a symmetric matrix is Hermitian, so the Mathlib spectral API applies.
 
 ## What uses sorry or remains a hypothesis
@@ -84,6 +84,12 @@ in this repository (`v4.30.0-rc1`, commit
    the author header. Lake's TOML parser rejected it (`unexpected 'A';
    expected '='`). The header is now a TOML `#` comment. No package or
    pin change.
+4. The compile adaptation lemma was originally named `isHermitian`. Lean
+   field notation `S.isHermitian` looks up `StrainTensor.isHermitian`, so
+   the first CI build after the lakefile fix failed with “Invalid field
+   `isHermitian`”. The lemma was renamed to `StrainTensor.isHermitian`.
+   The proof body and the statements of `eigenvalues` and
+   `eigenvalues_sum_zero` are unchanged.
 
 No other Lean wording was changed. The two `sorry` tokens were left in
 place.

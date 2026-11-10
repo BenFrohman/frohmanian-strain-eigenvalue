@@ -7,4 +7,4 @@ import StrainEigenvalue
 
 #print axioms StrainEigenvalue.eigenvalues_sum_zero
 #print axioms StrainEigenvalue.intermediate_representation
-#print axioms StrainEigenvalue.isHermitian
+#print axioms StrainEigenvalue.StrainTensor.isHermitian

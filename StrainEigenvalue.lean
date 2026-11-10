@@ -32,7 +32,7 @@ structure StrainTensor (𝕜 : Type*) [RCLike 𝕜] where
 /-- On `ℝ`, conjugate-transpose coincides with transpose, so symmetry implies
 `IsHermitian`. Written out because Mathlib `v4.30.0-rc1` (pin `0c154d6`) does
 not provide `Matrix.IsHermitian.of_isSymm`. -/
-lemma isHermitian (S : StrainTensor ℝ) : S.mat.IsHermitian := by
+lemma StrainTensor.isHermitian (S : StrainTensor ℝ) : S.mat.IsHermitian := by
   refine Matrix.IsHermitian.ext fun i j => ?_
   simpa [star_trivial] using S.symm.apply i j
 
