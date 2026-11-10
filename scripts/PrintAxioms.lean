@@ -14,3 +14,7 @@ import StrainEigenvalue
 #print axioms StrainEigenvalue.quadratic_form_intermediate
 #print axioms StrainEigenvalue.exampleStrain_eigenvalues_ne_zero
 #print axioms StrainEigenvalue.exampleStrain_intermediate_nontrivial
+#print axioms StrainEigenvalue.eigenvalues_monotone
+#print axioms StrainEigenvalue.eigenvalues_ordered
+#print axioms StrainEigenvalue.eigenvalues_min_nonpos_max_nonneg
+#print axioms StrainEigenvalue.exampleStrain_eigenvalues_eq
