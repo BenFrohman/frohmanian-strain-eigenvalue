@@ -86,10 +86,21 @@ in this repository (`v4.30.0-rc1`, commit
    pin change.
 4. The compile adaptation lemma was originally named `isHermitian`. Lean
    field notation `S.isHermitian` looks up `StrainTensor.isHermitian`, so
-   the first CI build after the lakefile fix failed with “Invalid field
-   `isHermitian`”. The lemma was renamed to `StrainTensor.isHermitian`.
-   The proof body and the statements of `eigenvalues` and
-   `eigenvalues_sum_zero` are unchanged.
+   the CI run after the lakefile fix
+   ([42919197798](https://github.com/BenFrohman/frohmanian-strain-eigenvalue/actions/runs/42919197798))
+   failed with “Invalid field `isHermitian`” on the projections in
+   `eigenvalues` and `eigenvalues_sum_zero`, and the trace-zero goal was
+   left unsolved. The lemma was renamed to `StrainTensor.isHermitian`.
+   The proof body of the conversion and the *statements* of
+   `eigenvalues` and `eigenvalues_sum_zero` are unchanged.
+5. After that rename, CI
+   ([42919676638](https://github.com/BenFrohman/frohmanian-strain-eigenvalue/actions/runs/42919676638))
+   failed because `rw [← h]` could not match Mathlib’s
+   `trace = ∑ i, ↑(eigenvalues i)` against the goal
+   `∑ i, eigenvalues S i = 0`. On `𝕜 = ℝ` the `↑` is a redundant
+   coercion. The proof now unfolds `eigenvalues`, identifies the
+   coercion, and then applies `trace_zero`. The theorem statement is
+   unchanged.
 
 No other Lean wording was changed. The two `sorry` tokens were left in
 place.

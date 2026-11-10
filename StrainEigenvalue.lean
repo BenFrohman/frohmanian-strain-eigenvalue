@@ -42,9 +42,19 @@ noncomputable def eigenvalues (S : StrainTensor ℝ) : Fin 3 → ℝ :=
 
 theorem eigenvalues_sum_zero (S : StrainTensor ℝ) :
     ∑ i, eigenvalues S i = 0 := by
-  -- Trace equals sum of eigenvalues for a real symmetric matrix
-  have h := S.isHermitian.trace_eq_sum_eigenvalues
-  rw [← h, S.trace_zero]
+  -- Trace equals sum of eigenvalues for a real symmetric matrix.
+  -- Mathlib states this as `trace = ∑ i, (eigenvalues i : 𝕜)`. On `𝕜 = ℝ`
+  -- that ascription is a redundant coercion, so `rw [← h]` cannot see
+  -- `eigenvalues S i` in the goal. Unfold and identify the coercion,
+  -- then apply `trace_zero`.
+  calc
+    ∑ i, eigenvalues S i
+        = ∑ i, (S.isHermitian.eigenvalues i : ℝ) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          -- The ascription `(· : ℝ)` is `RCLike.ofReal`, which is `id` on `ℝ`.
+          simp [eigenvalues, RCLike.ofReal_real_eq_id]
+    _ = S.mat.trace := S.isHermitian.trace_eq_sum_eigenvalues.symm
+    _ = 0 := S.trace_zero
 
 /-- Quadratic form of the strain on a unit vector. -/
 def stretching (S : StrainTensor ℝ) (ξ : Fin 3 → ℝ) (hξ : ‖ξ‖ = 1) : ℝ :=
