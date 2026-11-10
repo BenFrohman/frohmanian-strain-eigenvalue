@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 LEAN_FILE="StrainEigenvalue.lean"
 
 echo "== sorry / forbidden-token report =="
-sorry_count="$(grep -oE '\bsorry\b' "$LEAN_FILE" | wc -l | tr -d ' ')"
+sorry_count="$({ grep -oE '\bsorry\b' "$LEAN_FILE" || true; } | wc -l | tr -d ' ')"
 echo "sorry count in ${LEAN_FILE}: ${sorry_count}"
 if [ "$sorry_count" -gt 0 ]; then
   echo "sorry locations:"
