@@ -218,3 +218,7 @@ is encoded and proved.
   the Zenodo record.
 
 © 2026 Benjamin Stanley Frohman
+
+## Citation
+
+Cite this work with [`CITATION.cff`](CITATION.cff) (GitHub's "Cite this repository" button).
