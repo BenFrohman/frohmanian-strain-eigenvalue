@@ -1,0 +1,17 @@
+{
+  "semantics_file": "StrainEigenvalue/Semantics.lean",
+  "semantics_module": "StrainEigenvalue.Semantics",
+  "paper_path": "paper/Strain_Eigenvalue_Breakdown.tex",
+  "paper_sha256": "9f1e2db28b8b73951d3068ecbf14744ea5c2849aae14ae928695e2d995a8f6e3",
+  "main_theorems": [
+    "StrainEigenvalue.quadratic_form_intermediate"
+  ],
+  "lock_region_sha256": "9b9a3325e7558303f9f9d4f52b3f0bbbe505cb991070712c947c108123b9c127",
+  "draft_dirs": [
+    "StrainEigenvalue/Draft"
+  ],
+  "lean_roots": [
+    "StrainEigenvalue",
+    "StrainEigenvalue.lean"
+  ]
+}
