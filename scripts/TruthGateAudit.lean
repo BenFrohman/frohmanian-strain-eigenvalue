@@ -26,7 +26,7 @@ open Lean Meta Elab Command
 namespace TruthGateAudit
 
 def standard : List Name := [``propext, ``Classical.choice, ``Quot.sound]
-def mains : List Name := [`StrainEigenvalue.quadratic_form_intermediate]
+def mains : List Name := [`StrainEigenvalue.quadratic_form_intermediate_of_eigenbasis]
 
 partial def reach (env : Environment) (todo : List Name) (seen : NameSet) : NameSet :=
   match todo with

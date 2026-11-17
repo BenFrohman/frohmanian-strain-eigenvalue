@@ -4,9 +4,9 @@
   "paper_path": "paper/Strain_Eigenvalue_Breakdown.tex",
   "paper_sha256": "9f1e2db28b8b73951d3068ecbf14744ea5c2849aae14ae928695e2d995a8f6e3",
   "main_theorems": [
-    "StrainEigenvalue.quadratic_form_intermediate"
+    "StrainEigenvalue.quadratic_form_intermediate_of_eigenbasis"
   ],
-  "lock_region_sha256": "9b9a3325e7558303f9f9d4f52b3f0bbbe505cb991070712c947c108123b9c127",
+  "lock_region_sha256": "592cdf2698d7c3e384a959175dd406975c5dafbe5eed22a417fac3cc9197c804",
   "draft_dirs": [
     "StrainEigenvalue/Draft"
   ],
@@ -14,7 +14,18 @@
     "StrainEigenvalue",
     "StrainEigenvalue.lean"
   ],
-  "certifying": false,
-  "reopened_reason": "Not an independent transcription. `paper_claim` uses the repository's own `eigenvalues` and `eigenCoords` for the ordered eigenvalues λ₁ ≤ λ₂ ≤ λ₃ and the coordinates ξ₁, ξ₃, so the terms that carry the content are read through repository definitions.",
-  "reopened_on": "2026-11-16"
+  "certifying": true,
+  "reaudit_history": [
+    {
+      "reopened_on": "2026-11-16",
+      "reopened_reason": "Not an independent transcription. `paper_claim` uses the repository's own `eigenvalues` and `eigenCoords` for the ordered eigenvalues λ₁ ≤ λ₂ ≤ λ₃ and the coordinates ξ₁, ξ₃, so the terms that carry the content are read through repository definitions.",
+      "previous_main_theorems": [
+        "StrainEigenvalue.quadratic_form_intermediate"
+      ]
+    },
+    {
+      "relocked_on": "2026-11-16",
+      "relocked_as": "Proposition 1.1 for any orthonormal eigenbasis e₁, e₂, e₃ with λ₁ ≤ λ₂ ≤ λ₃, transcribed from the paper's own terms (raw symmetric trace-free matrix, three reals, three orthonormal eigenvectors, ξ = ξ₁e₁ + ξ₂e₂ + ξ₃e₃), with no use of the repository's `eigenvalues`/`eigenCoords`. New main theorem `quadratic_form_intermediate_of_eigenbasis` (StrainEigenvalue/Eigenbasis.lean)."
+    }
+  ]
 }
