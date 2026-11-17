@@ -13,5 +13,8 @@
   "lean_roots": [
     "StrainEigenvalue",
     "StrainEigenvalue.lean"
-  ]
+  ],
+  "certifying": false,
+  "reopened_reason": "Not an independent transcription. `paper_claim` uses the repository's own `eigenvalues` and `eigenCoords` for the ordered eigenvalues λ₁ ≤ λ₂ ≤ λ₃ and the coordinates ξ₁, ξ₃, so the terms that carry the content are read through repository definitions.",
+  "reopened_on": "2026-11-16"
 }
