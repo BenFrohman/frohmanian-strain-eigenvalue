@@ -75,12 +75,22 @@ Reports are written to `truth-gate-report/`.
 * Paper: `paper/Strain_Eigenvalue_Breakdown.tex`
 * sha256: `9f1e2db28b8b73951d3068ecbf14744ea5c2849aae14ae928695e2d995a8f6e3`
 * Section: Section 1, Proposition "Intermediate-eigenvalue representation" (Proposition 1.1)
-* Main theorem(s): `StrainEigenvalue.quadratic_form_intermediate`
+* Main theorem(s): `StrainEigenvalue.quadratic_form_intermediate_of_eigenbasis`
 * Lock file: `TRUTH_GATE.lock`; semantics: `StrainEigenvalue/Semantics.lean`
 
 Verbatim quote:
 
 ```
+be the symmetric strain-rate tensor. Then \(\operatorname{tr}S=\nabla\cdot u=0\), so the three real eigenvalues satisfy (cf.\ Betchov~\cite{Betchov1956})
+\begin{equation}\label{eq:trace}
+\lambda_1\le\lambda_2\le\lambda_3,\qquad\lambda_1+\lambda_2+\lambda_3=0.
+\end{equation}
+At each point where \(S\) is continuous there exists an orthonormal eigenbasis \(\{e_1,e_2,e_3\}\). Writing the unit vorticity direction
+\[
+\boldsymbol{\xi}=\frac{\omega}{|\omega|}=\xi_1 e_1+\xi_2 e_2+\xi_3 e_3
+\]
+(with \(\xi_1^2+\xi_2^2+\xi_3^2=1\)) one obtains the quadratic form
+
 \begin{proposition}[Intermediate-eigenvalue representation]
 \[
 \boldsymbol{\xi}\cdot S\boldsymbol{\xi}
@@ -90,29 +100,29 @@ Verbatim quote:
 
 ```lean
 def formal_claim : Prop :=
-  ∀ (S : StrainTensor ℝ) (ξ : Fin 3 → ℝ), ∑ i, (ξ i)^2 = 1 →
-    ξ ⬝ᵥ (S.mat *ᵥ ξ) =
-      eigenvalues S 1 +
-      (eigenvalues S 0 - eigenvalues S 1) * (eigenCoords S ξ 0)^2 +
-      (eigenvalues S 2 - eigenvalues S 1) * (eigenCoords S ξ 2)^2
+  ∀ (S : StrainTensor ℝ) (U : Matrix (Fin 3) (Fin 3) ℝ) (l : Fin 3 → ℝ),
+    Uᵀ * U = 1 → S.mat * U = U * Matrix.diagonal l → Monotone l →
+    ∀ (ξ : Fin 3 → ℝ), ∑ i, (ξ i)^2 = 1 →
+      ξ ⬝ᵥ (S.mat *ᵥ ξ) =
+        l 1 + (l 0 - l 1) * ((Uᵀ *ᵥ ξ) 0)^2 + (l 2 - l 1) * ((Uᵀ *ᵥ ξ) 2)^2
 
 def paper_claim : Prop :=
-  ∀ (A : Matrix (Fin 3) (Fin 3) ℝ) (hsymm : A.IsSymm) (htr : A.trace = 0) (ξ : Fin 3 → ℝ),
-    (ξ 0)^2 + (ξ 1)^2 + (ξ 2)^2 = 1 →
-      let S : StrainTensor ℝ := ⟨A, hsymm, htr⟩
-      let l₁ := eigenvalues S 0
-      let l₂ := eigenvalues S 1
-      let l₃ := eigenvalues S 2
-      let ξ₁ := eigenCoords S ξ 0
-      let ξ₃ := eigenCoords S ξ 2
-      ξ ⬝ᵥ (A *ᵥ ξ) = l₂ + (l₁ - l₂) * ξ₁^2 + (l₃ - l₂) * ξ₃^2
+  ∀ (A : Matrix (Fin 3) (Fin 3) ℝ), A.IsSymm → A.trace = 0 →
+    ∀ (l₁ l₂ l₃ : ℝ) (e₁ e₂ e₃ : Fin 3 → ℝ),
+      l₁ ≤ l₂ → l₂ ≤ l₃ →
+      e₁ ⬝ᵥ e₁ = 1 → e₂ ⬝ᵥ e₂ = 1 → e₃ ⬝ᵥ e₃ = 1 →
+      e₁ ⬝ᵥ e₂ = 0 → e₁ ⬝ᵥ e₃ = 0 → e₂ ⬝ᵥ e₃ = 0 →
+      A *ᵥ e₁ = l₁ • e₁ → A *ᵥ e₂ = l₂ • e₂ → A *ᵥ e₃ = l₃ • e₃ →
+      ∀ ξ₁ ξ₂ ξ₃ : ℝ, ξ₁^2 + ξ₂^2 + ξ₃^2 = 1 →
+        (ξ₁ • e₁ + ξ₂ • e₂ + ξ₃ • e₃) ⬝ᵥ (A *ᵥ (ξ₁ • e₁ + ξ₂ • e₂ + ξ₃ • e₃)) =
+          l₂ + (l₁ - l₂) * ξ₁^2 + (l₃ - l₂) * ξ₃^2
 ```
 
-See the doc comment of `StrainEigenvalue/Semantics.lean` for the fixed reading of the paper's terms and the scope.
+See the doc comment of `StrainEigenvalue/Semantics.lean` for the fixed reading of the paper's terms, the scope and the non-vacuity witness.
 
-## Re-audit (2026-11-16): this lock is NOT certifying
+## Re-audit (2026-11-16): the earlier lock was NOT certifying (superseded by the re-lock below)
 
-Status: **REOPENED. The gate is red on purpose.** `TRUTH_GATE.lock` carries `"certifying": false`, and
+Status at the re-audit: **REOPENED. The gate was red on purpose.** `TRUTH_GATE.lock` carries `"certifying": false`, and
 `scripts/truth_gate_check.py` fails while it does. Nothing was deleted: `Semantics.lean`, the quotes,
 the hashes and the history are unchanged.
 
@@ -132,3 +142,13 @@ Why it is reopened:
 * Otherwise the claim is the complete Proposition 1.1, it is about the real objects (symmetric trace-free 3×3 matrices), and it is kernel-checked.
 
 What would re-certify it: Re-lock with `paper_claim` transcribed from the paper's words. For a symmetric trace-free `A`, every orthonormal eigenbasis `e₁, e₂, e₃` with eigenvalues `λ₁ ≤ λ₂ ≤ λ₃`, and every unit `ξ`: `ξ·Aξ = λ₂ + (λ₁−λ₂)(ξ·e₁)² + (λ₃−λ₂)(ξ·e₃)²`.
+
+## Re-lock (2026-11-16): full lock, certifying
+
+With Benjamin Stanley Frohman's approval of 2026-11-16, the lock was replaced by a full lock:
+Proposition 1.1 for any orthonormal eigenbasis e₁, e₂, e₃ with λ₁ ≤ λ₂ ≤ λ₃, transcribed from the paper's own terms (raw symmetric trace-free matrix, three reals, three orthonormal eigenvectors, ξ = ξ₁e₁ + ξ₂e₂ + ξ₃e₃), with no use of the repository's `eigenvalues`/`eigenCoords`. New main theorem `quadratic_form_intermediate_of_eigenbasis` (StrainEigenvalue/Eigenbasis.lean).
+
+Previous main theorem(s): `StrainEigenvalue.quadratic_form_intermediate`. New main theorem(s): `StrainEigenvalue.quadratic_form_intermediate_of_eigenbasis`. `TRUTH_GATE.lock` is back to `"certifying": true`; the reopen record is kept under `reaudit_history`.
+All rules still apply: no `sorry`/`admit`/`native_decide`/new axioms; only `propext`, `Classical.choice`, `Quot.sound`;
+`paper_claim` is an independent transcription of the verbatim quote; the correspondence is substantive (not `rfl`/`Iff.rfl`)
+and does not use the main theorems; a non-vacuity witness is proved in `StrainEigenvalue/Semantics.lean`.
