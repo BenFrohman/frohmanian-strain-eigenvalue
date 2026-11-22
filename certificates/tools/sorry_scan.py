@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-"""Scan every tracked .lean file (comments and strings stripped) for sorry, admit,
-native_decide and axiom declarations.  Prints each hit; exits 1 if any are found."""
+"""Scan tracked .lean files (comments and strings stripped) for sorry, admit,
+native_decide and axiom declarations.
+
+provenance/ is the archived Zenodo deposit. It is not a Lake root, it does not
+compile on this pin, and it still contains sorry. It is not part of this
+certificate. Every other tracked .lean file is scanned. A hit still exits 1.
+"""
 import re, subprocess, sys
 def strip(s):
     out = []; i = 0; d = 0
@@ -16,7 +21,14 @@ def strip(s):
             out.append('""'); i = j + 1; continue
         out.append(s[i]); i += 1
     return ''.join(out)
+# Archived deposit. Not a build root. Still contains sorry. Not certified.
+SKIP_PREFIXES = ("provenance/",)
 files = subprocess.check_output(['git', 'ls-files', '*.lean']).decode().split()
+skipped = [f for f in files if f.startswith(SKIP_PREFIXES)]
+files = [f for f in files if not f.startswith(SKIP_PREFIXES)]
+print("EXCLUDED archived deposit (not built, not certified, still contains sorry):")
+for f in skipped:
+    print(f"  {f}")
 bad = []
 for f in files:
     for n, l in enumerate(strip(open(f, encoding='utf-8').read()).split('\n'), 1):
