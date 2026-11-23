@@ -5,6 +5,8 @@ Authors: Benjamin Stanley Frohman
 -/
 
 import StrainEigenvalue
+import StrainEigenvalue.Eigenbasis
+import StrainEigenvalue.Semantics
 
 /-!
 # scripts.PrintAxioms
@@ -19,6 +21,7 @@ Machine-checked Lean 4 module.
 #print axioms StrainEigenvalue.quadratic_form_eq_sum
 #print axioms StrainEigenvalue.sum_sq_eigenCoords
 #print axioms StrainEigenvalue.quadratic_form_intermediate
+#print axioms StrainEigenvalue.quadratic_form_intermediate_of_eigenbasis
 #print axioms StrainEigenvalue.exampleStrain_eigenvalues_ne_zero
 #print axioms StrainEigenvalue.exampleStrain_intermediate_nontrivial
 #print axioms StrainEigenvalue.eigenvalues_monotone

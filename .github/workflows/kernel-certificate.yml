@@ -34,9 +34,15 @@ jobs:
         run: |
           if grep -q '"name": *"mathlib"' lake-manifest.json 2>/dev/null; then lake exe cache get; else echo "no mathlib dependency"; fi
       - name: lake build
+        # Full compile log of this repository's modules. The Mathlib cache from
+        # the previous step is left in place (no cache clear, Mathlib is not
+        # rebuilt). Only `.lake/build` (this package's incremental artifacts)
+        # is removed so `lake build` emits a real compile log rather than two
+        # cache-hit lines.
         run: |
           set -o pipefail
-          lake build 2>&1 | tee cert-out/build.log
+          rm -rf .lake/build
+          lake build -v 2>&1 | tee cert-out/build.log
       - name: sorry / admit / native_decide / axiom scan
         run: |
           set -o pipefail
@@ -80,6 +86,19 @@ jobs:
           done < cert-out/modules.txt | tee -a cert-out/leanchecker.txt
           if grep -q ': FAILED$' cert-out/leanchecker.txt; then exit 1; fi
           echo "RESULT: $(grep -c ': OK (' cert-out/leanchecker.txt) of $(grep -c . cert-out/modules.txt) modules replayed through the kernel, 0 failures" | tee -a cert-out/leanchecker.txt
+      - name: Collect lake-manifest provenance into cert-out
+        if: always()
+        run: |
+          mkdir -p cert-out
+          if [ -f lake-manifest.json ]; then
+            cp -a lake-manifest.json cert-out/lake-manifest.json
+            sha256sum lake-manifest.json | tee cert-out/lake-manifest.json.sha256sum
+            awk '{print $1}' cert-out/lake-manifest.json.sha256sum > cert-out/lake-manifest.json.sha256
+            echo "lake-manifest.json sha256=$(cat cert-out/lake-manifest.json.sha256)"
+          else
+            echo "MISSING: lake-manifest.json was not present in the checkout" | tee cert-out/MISSING-lake-manifest.txt
+            exit 1
+          fi
       - name: Upload certificate files
         if: always()
         uses: actions/upload-artifact@v4

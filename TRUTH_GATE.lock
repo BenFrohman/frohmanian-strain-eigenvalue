@@ -7,9 +7,7 @@
     "StrainEigenvalue.quadratic_form_intermediate_of_eigenbasis"
   ],
   "lock_region_sha256": "592cdf2698d7c3e384a959175dd406975c5dafbe5eed22a417fac3cc9197c804",
-  "draft_dirs": [
-    "StrainEigenvalue/Draft"
-  ],
+  "draft_dirs": [],
   "lean_roots": [
     "StrainEigenvalue",
     "StrainEigenvalue.lean"
@@ -18,14 +16,14 @@
   "reaudit_history": [
     {
       "reopened_on": "2026-11-16",
-      "reopened_reason": "Not an independent transcription. `paper_claim` uses the repository's own `eigenvalues` and `eigenCoords` for the ordered eigenvalues λ₁ ≤ λ₂ ≤ λ₃ and the coordinates ξ₁, ξ₃, so the terms that carry the content are read through repository definitions.",
+      "reopened_reason": "Not an independent transcription. `paper_claim` uses the repository's own `eigenvalues` and `eigenCoords` for the ordered eigenvalues \u03bb\u2081 \u2264 \u03bb\u2082 \u2264 \u03bb\u2083 and the coordinates \u03be\u2081, \u03be\u2083, so the terms that carry the content are read through repository definitions.",
       "previous_main_theorems": [
         "StrainEigenvalue.quadratic_form_intermediate"
       ]
     },
     {
       "relocked_on": "2026-11-16",
-      "relocked_as": "Proposition 1.1 for any orthonormal eigenbasis e₁, e₂, e₃ with λ₁ ≤ λ₂ ≤ λ₃, transcribed from the paper's own terms (raw symmetric trace-free matrix, three reals, three orthonormal eigenvectors, ξ = ξ₁e₁ + ξ₂e₂ + ξ₃e₃), with no use of the repository's `eigenvalues`/`eigenCoords`. New main theorem `quadratic_form_intermediate_of_eigenbasis` (StrainEigenvalue/Eigenbasis.lean)."
+      "relocked_as": "Proposition 1.1 for any orthonormal eigenbasis e\u2081, e\u2082, e\u2083 with \u03bb\u2081 \u2264 \u03bb\u2082 \u2264 \u03bb\u2083, transcribed from the paper's own terms (raw symmetric trace-free matrix, three reals, three orthonormal eigenvectors, \u03be = \u03be\u2081e\u2081 + \u03be\u2082e\u2082 + \u03be\u2083e\u2083), with no use of the repository's `eigenvalues`/`eigenCoords`. New main theorem `quadratic_form_intermediate_of_eigenbasis` (StrainEigenvalue/Eigenbasis.lean)."
     }
   ]
 }

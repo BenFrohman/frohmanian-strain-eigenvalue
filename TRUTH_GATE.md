@@ -30,7 +30,7 @@ makes (drift), whether by accident or by an injected instruction.
 4. `formal_claim` is exactly the statement of the repository's main theorem, and
    `paper_claim_holds` is the main theorem transported across the correspondence.
 5. Only `propext`, `Classical.choice` and `Quot.sound`. No `sorry`, `admit`, `native_decide` or
-   new `axiom` anywhere outside the draft directories in `TRUTH_GATE.lock`.
+   new `axiom` in any tracked `.lean` file. `draft_dirs` in `TRUTH_GATE.lock` is empty; there is no draft carve-out.
 6. If the paper's English claim cannot be faithfully transcribed, or is not what Lean proves,
    the gate stays **red** and the mismatch is reported. Never patch over it: never weaken
    `paper_claim`, drop a hypothesis, or redefine it to match the formal side. If the
@@ -44,8 +44,8 @@ makes (drift), whether by accident or by an injected instruction.
 
 ## What `scripts/verify-lock.sh` checks mechanically
 
-* `lake build` succeeds, with no `sorry` warning outside the draft directories;
-* no `sorry` / `admit` / `native_decide` / `axiom` token outside the draft directories
+* `lake build` succeeds, with no `sorry` warning;
+* no `sorry` / `admit` / `native_decide` / `axiom` token in any tracked `.lean` file
   (comments and strings excluded);
 * `Semantics.lean` has `PAPER_PATH`, `PAPER_SHA256`, `PAPER_SECTION` and a verbatim
   `PAPER_QUOTE`; the hash matches the paper file and the quote occurs in it; this file carries
@@ -84,7 +84,7 @@ a proof failure, though every kernel check was green.
 
 | Class | Raised by | What the verdict prints | What fixes it |
 |---|---|---|---|
-| **KERNEL/PROOF** | `lake build` fails; `sorry`/`admit`/`native_decide`/`axiom` outside the draft dirs; nonstandard axioms; a missing or ill-typed locked declaration; `intended_correspondence` fails to check | `KERNEL/PROOF FAILURE (a proof does not check)` and `This is a proof failure`, with the failing lines | Fix the proof. **This is the only class ever described as a proof failure.** |
+| **KERNEL/PROOF** | `lake build` fails; `sorry`/`admit`/`native_decide`/`axiom` in any tracked `.lean` file; nonstandard axioms; a missing or ill-typed locked declaration; `intended_correspondence` fails to check | `KERNEL/PROOF FAILURE (a proof does not check)` and `This is a proof failure`, with the failing lines | Fix the proof. **This is the only class ever described as a proof failure.** |
 | **LOCK-FORM** | `paper_claim` reuses a repository Prop or definition; a vacuous alias of `formal_claim`; an `rfl` correspondence; a partial lock; a lock marked `"certifying": false`; an edited lock region; missing `PAPER_*` fields | `LOCK-FORM: lock wording/form problem, not a math failure`, each offending identifier with `file:line` in the Semantics file and the `file:line` of its repository declaration, then the independent transcription that is required | Rewrite the paper side from the paper's own definition, in the paper's symbols, and prove `intended_correspondence` with real reasoning. A new lock needs the author's sign-off. |
 | **PAPER-HASH** | the paper's sha256 differs from the lock | `PAPER-HASH: the paper changed after the lock (not a math failure)`, the commit whose bytes match the lock, every changed line, whether only copyright/license/attribution lines changed, and whether the locked quote is still verbatim | If the edit is intended, update `paper_sha256` in `TRUTH_GATE.lock`, the `PAPER_SHA256:` line in the Semantics file and the hash in this file, all in one commit. If the quote changed, that is a statement change and needs sign-off. |
 | **STALE-BASE** | a PR's merge ref was built on an older main, and main has since changed the lock, a Semantics file, a paper or a gate script | `STALE-BASE: branch is behind main's lock; update branch (not a math failure)` | The workflow re-merges the PR head onto the current main and judges that merge, which is what would actually land. It goes red only if that merge conflicts, and then it says to update the branch. |
