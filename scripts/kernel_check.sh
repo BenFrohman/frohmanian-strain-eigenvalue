@@ -8,24 +8,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-LEAN_FILE="StrainEigenvalue.lean"
-
 echo "== sorry / forbidden-token report =="
-sorry_count="$({ grep -oE '\bsorry\b' "$LEAN_FILE" || true; } | wc -l | tr -d ' ')"
-echo "sorry count in ${LEAN_FILE}: ${sorry_count}"
-if [ "$sorry_count" -gt 0 ]; then
-  echo "sorry locations:"
-  grep -nE '\bsorry\b' "$LEAN_FILE" || true
-  echo "This development is a skeleton: sorry tokens are reported, not treated as a CI failure."
-else
-  echo "No sorry in ${LEAN_FILE}; enforcing a zero-sorry check."
-  if grep -nE '\bsorry\b' "$LEAN_FILE"; then
-    echo "FAIL: sorry found"; exit 1
-  fi
-fi
+# Every tracked .lean file; no exclusion list. The same check as certificates/tools/sorry_scan.py.
+python3 certificates/tools/sorry_scan.py
 
-if grep -nE '\b(admit|native_decide|implemented_by)\b|^\s*(axiom|unsafe|opaque)\b' \
-     --include='*.lean' "$LEAN_FILE" scripts/PrintAxioms.lean; then
+if git ls-files '*.lean' | xargs grep -nE '\b(admit|native_decide|implemented_by)\b|^\s*(axiom|unsafe|opaque)\b'; then
   echo "FAIL: admit/native_decide/axiom/unsafe/opaque/implemented_by found"
   exit 1
 fi

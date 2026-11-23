@@ -1,5 +1,9 @@
 # Strain-tensor eigenvalue decomposition
 
+[![Lean build and kernel check](https://github.com/BenFrohman/frohmanian-strain-eigenvalue/actions/workflows/lean.yml/badge.svg?branch=main)](https://github.com/BenFrohman/frohmanian-strain-eigenvalue/actions/workflows/lean.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24121987.svg)](https://doi.org/10.5281/zenodo.24121987)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0006--7068--3718-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0006-7068-3718)
+
 Author: Benjamin Stanley Frohman
 Affiliation: Independent Researcher, Texas, United States
 ORCID: [0009-0006-7068-3718](https://orcid.org/0009-0006-7068-3718)
@@ -10,6 +14,8 @@ and a short algebraic note (`paper/Strain_Eigenvalue_Breakdown.tex`, with a
 compiled PDF). The note records the elementary eigenvalue decomposition of
 the symmetric, trace-free strain-rate tensor of a divergence-free field, and
 the consequences of that identity for the local vortex-stretching term.
+
+The algebraic dependency spine, including the Truth Gate theorem `quadratic_form_intermediate_of_eigenbasis`, is recorded in [`DEPENDENCY_SPINE.md`](DEPENDENCY_SPINE.md).
 
 ## Honest scope
 
