@@ -140,7 +140,7 @@ python3 -m unittest discover -s scripts/tests -p 'test_truth_gate_classify.py' -
 ## The locked claim of this repository
 
 * Paper: `paper/Strain_Eigenvalue_Breakdown.tex`
-* sha256: `9f1e2db28b8b73951d3068ecbf14744ea5c2849aae14ae928695e2d995a8f6e3`
+* sha256: `95541c7b44b2c1bdab263c75090339281e55aac3605d14b5dec0b13105c2bd3c`
 * Section: Section 1, Proposition "Intermediate-eigenvalue representation" (Proposition 1.1)
 * Main theorem(s): `StrainEigenvalue.quadratic_form_intermediate_of_eigenbasis`
 * Lock file: `TRUTH_GATE.lock`; semantics: `StrainEigenvalue/Semantics.lean`

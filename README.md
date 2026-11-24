@@ -220,8 +220,8 @@ is encoded and proved.
 ## License
 
 - Code: Apache License 2.0 (`LICENSE`).
-- Paper (LaTeX and PDF): Apache License 2.0 (`LICENSE-paper`), matching
-  the Zenodo record.
+- Paper (LaTeX and PDF): Creative Commons Attribution 4.0 International
+  (`LICENSE-paper`).
 
 © 2026 Benjamin Stanley Frohman
 
